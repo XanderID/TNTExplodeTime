@@ -1,0 +1,5 @@
+---
+# TNT Custom Explode Time Text
+# Tag {time}
+time-text: "§a{time}"
+...
