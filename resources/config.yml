@@ -1,4 +1,20 @@
 ---
+# Can TNT Damage to Player
+damage: false
+
+# Can TNT Knockback to Player
+knockback: true
+
+# Can TNT Explode Block
+explode: false
+
+# Time for TNT Explode
+# In Seconds
+time: 4
+
+# Can TNT Explode when placed
+placed: true
+
 # TNT Custom Explode Time Text
 # Tag {time}
 time-text: "§a{time}"
