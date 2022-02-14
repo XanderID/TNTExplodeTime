@@ -3,17 +3,34 @@
 now you can know when tnt explode
 
 # Feature
-- To View Explode time your cursor hovers in front of tnt ( this can help reduce lag )
 - Can Custom Text
-
-# To-Do List
-- Custom Explode Time
+- Can set Make Explosion Break Block Or Not
+- Can Set TNT Explode Time
+- Can set on placed spawn
+- Can set TNT Make Damage or Not
+- Can Set TNT Make Knockback or Not
 
 # Config
 
 ``` YAML
 
 ---
+# Can TNT Damage to Player
+damage: false
+
+# Can TNT Knockback to Player
+knockback: true
+
+# Can TNT Explode Block
+explode: false
+
+# Time for TNT Explode
+# In Seconds
+time: 4
+
+# Can TNT Explode when placed
+placed: true
+
 # TNT Custom Explode Time Text
 # Tag {time}
 time-text: "§a{time}"
