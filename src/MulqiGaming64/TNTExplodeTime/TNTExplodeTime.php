@@ -18,6 +18,8 @@ use pocketmine\entity\Location;
 use pocketmine\world\Position;
 use pocketmine\utils\Random;
 
+use pocketmine\block\VanillaBlocks;
+
 use pocketmine\entity\projectile\Arrow;
 
 use pocketmine\block\TNT;
@@ -29,7 +31,6 @@ use pocketmine\item\Durable;
 use pocketmine\item\enchantment\VanillaEnchantments;
 use pocketmine\item\FlintSteel;
 use pocketmine\item\Item;
-use pocketmine\block\BlockFactory;
 
 use MulqiGaming64\TNTExplodeTime\TNT\TNTExplode;
 
@@ -101,7 +102,7 @@ class TNTExplodeTime extends PluginBase implements Listener{
     	$pos = $block->getPosition();
     	if($block instanceof TNT){
     		if($entity instanceof Arrow and $entity->isOnFire()){
-    			$pos->getWorld()->setBlock($pos, BlockFactory::getInstance()->get(0, 0));
+    			$pos->getWorld()->setBlock($pos, VanillaBlocks::AIR());
     			$location = Location::fromObject($pos->add(0.5, 0, 0.5), $pos->getWorld());
     			$this->spawnTNT($location, $this->getTime());
     		}
@@ -118,7 +119,7 @@ class TNTExplodeTime extends PluginBase implements Listener{
 				if($item instanceof Durable){
 					$item->applyDamage(1);
 				}
-				$pos->getWorld()->setBlock($pos, BlockFactory::getInstance()->get(0, 0));
+				$pos->getWorld()->setBlock($pos, VanillaBlocks::AIR());
 				$location = Location::fromObject($pos->add(0.5, 0, 0.5), $pos->getWorld());
     			$this->spawnTNT($location, $this->getTime());
     		}
