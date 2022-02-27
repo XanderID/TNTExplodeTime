@@ -10,6 +10,9 @@ now you can know when tnt explode
 - Can set TNT Make Damage or Not
 - Can Set TNT Make Knockback or Not
 
+# To-Do
+- Custom Knockback
+
 # Config
 
 ``` YAML
