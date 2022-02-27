@@ -18,8 +18,6 @@ use pocketmine\entity\Location;
 use pocketmine\world\Position;
 use pocketmine\utils\Random;
 
-use pocketmine\block\VanillaBlocks;
-
 use pocketmine\entity\projectile\Arrow;
 
 use pocketmine\block\TNT;
@@ -31,8 +29,10 @@ use pocketmine\item\Durable;
 use pocketmine\item\enchantment\VanillaEnchantments;
 use pocketmine\item\FlintSteel;
 use pocketmine\item\Item;
+use pocketmine\block\BlockFactory;
 
 use MulqiGaming64\TNTExplodeTime\TNT\TNTExplode;
+use MulqiGaming64\SaveAllResources\SaveAllResources;
 
 use function cos;
 use function sin;
@@ -44,7 +44,9 @@ class TNTExplodeTime extends PluginBase implements Listener{
     private static $instance;
     
     public function onEnable(): void{
-    	$this->saveDefaultConfig();
+    	//$this->saveDefaultConfig();
+    
+    	(new SaveAllResources($this))->save();
     		
    	 // Register Entity
     	EntityFactory::getInstance()->register(TNTExplode::class, function(World $world, CompoundTag $nbt) : TNTExplode{
@@ -87,7 +89,7 @@ class TNTExplodeTime extends PluginBase implements Listener{
     	$mot = (new Random())->nextSignedFloat() * M_PI * 2;
     	/** @var TNTExplode $entity */
         $entity = new TNTExplode($location);
-        $entity->setNewFuse($explodeTime * 20);
+        $entity->setFuse($explodeTime * 20);
         $entity->setWorksUnderwater(false);
 		$entity->setMotion(new Vector3(-sin($mot) * 0.02, 0.2, -cos($mot) * 0.02));
         $entity->setNameTagAlwaysVisible();
@@ -102,7 +104,7 @@ class TNTExplodeTime extends PluginBase implements Listener{
     	$pos = $block->getPosition();
     	if($block instanceof TNT){
     		if($entity instanceof Arrow and $entity->isOnFire()){
-    			$pos->getWorld()->setBlock($pos, VanillaBlocks::AIR());
+    			$pos->getWorld()->setBlock($pos, BlockFactory::getInstance()->get(0, 0));
     			$location = Location::fromObject($pos->add(0.5, 0, 0.5), $pos->getWorld());
     			$this->spawnTNT($location, $this->getTime());
     		}
@@ -119,11 +121,17 @@ class TNTExplodeTime extends PluginBase implements Listener{
 				if($item instanceof Durable){
 					$item->applyDamage(1);
 				}
-				$pos->getWorld()->setBlock($pos, VanillaBlocks::AIR());
+				$pos->getWorld()->setBlock($pos, BlockFactory::getInstance()->get(0, 0));
 				$location = Location::fromObject($pos->add(0.5, 0, 0.5), $pos->getWorld());
     			$this->spawnTNT($location, $this->getTime());
     		}
     	}
+    }
+    
+    public function getPopItem(Item $item): Item{
+    	$count = $item->getCount();
+    	$count -= 1;
+    	return $item->setCount($count);
     }
     
     public function onPlace(BlockPlaceEvent $event){
@@ -135,7 +143,8 @@ class TNTExplodeTime extends PluginBase implements Listener{
     			$event->cancel();
     			$location = Location::fromObject($pos->add(0.5, 0, 0.5), $pos->getWorld());
     			$this->spawnTNT($location, $this->getTime());
-    			$player->getInventory()->setItemInHand($player->getInventory()->getItemInHand()->pop());
+    			$item = $this->getPopItem($player->getInventory()->getItemInHand());
+    			$player->getInventory()->setItemInHand($item);
     		}
     	}
     }
