@@ -32,7 +32,6 @@ use pocketmine\item\Item;
 use pocketmine\block\BlockFactory;
 
 use MulqiGaming64\TNTExplodeTime\TNT\TNTExplode;
-use MulqiGaming64\SaveAllResources\SaveAllResources;
 
 use function cos;
 use function sin;
@@ -44,9 +43,7 @@ class TNTExplodeTime extends PluginBase implements Listener{
     private static $instance;
     
     public function onEnable(): void{
-    	//$this->saveDefaultConfig();
-    
-    	(new SaveAllResources($this))->save();
+    	$this->saveDefaultConfig();
     		
    	 // Register Entity
     	EntityFactory::getInstance()->register(TNTExplode::class, function(World $world, CompoundTag $nbt) : TNTExplode{
