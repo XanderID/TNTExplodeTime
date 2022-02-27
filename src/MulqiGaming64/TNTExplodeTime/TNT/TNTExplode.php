@@ -8,41 +8,95 @@ declare(strict_types=1);
 
 namespace MulqiGaming64\TNTExplodeTime\TNT;
 
-use pocketmine\entity\object\PrimedTNT;
 use pocketmine\event\entity\ExplosionPrimeEvent;
-use MulqiGaming64\TNTExplodeTime\TNT\TNTExplosion;
-use MulqiGaming64\TNTExplodeTime\TNTExplodeTime;
+use pocketmine\entity\Entity;
+use pocketmine\entity\EntitySizeInfo;
+use pocketmine\entity\Explosive;
+use pocketmine\event\entity\EntityDamageEvent;
+use pocketmine\math\Vector3;
+use pocketmine\nbt\tag\CompoundTag;
+use pocketmine\network\mcpe\protocol\types\entity\EntityIds;
+use pocketmine\network\mcpe\protocol\types\entity\EntityMetadataCollection;
+use pocketmine\network\mcpe\protocol\types\entity\EntityMetadataFlags;
+use pocketmine\network\mcpe\protocol\types\entity\EntityMetadataProperties;
+use pocketmine\world\Explosion;
 use pocketmine\world\Position;
 
-class TNTExplode extends PrimedTNT{
+use MulqiGaming64\TNTExplodeTime\TNT\TNTExplosion;
+use MulqiGaming64\TNTExplodeTime\TNTExplodeTime;
+
+class TNTExplode extends Entity implements Explosive{
 	
+	public static function getNetworkTypeId() : string{ return EntityIds::TNT; }
+
+	protected $gravity = 0.04;
+	protected $drag = 0.02;
+
 	/** @var int */
-	public $newFuse = 80;
-	
-	public function setNewFuse(int $fuse) : void{
+	protected $fuse;
+
+	protected bool $worksUnderwater = false;
+
+	public $canCollide = false;
+
+	protected function getInitialSizeInfo() : EntitySizeInfo{ return new EntitySizeInfo(0.98, 0.98); }
+
+	public function getFuse() : int{
+		return $this->fuse;
+	}
+
+	public function setFuse(int $fuse) : void{
 		if($fuse < 0 or $fuse > 32767){
 			throw new \InvalidArgumentException("Fuse must be in the range 0-32767");
 		}
-		$this->newFuse = $fuse;
+		$this->fuse = $fuse;
 		$this->networkPropertiesDirty = true;
 	}
-	
-	public function getNewFuse() : int{
-		return $this->newFuse;
+
+	public function worksUnderwater() : bool{ return $this->worksUnderwater; }
+
+	public function setWorksUnderwater(bool $worksUnderwater) : void{
+		$this->worksUnderwater = $worksUnderwater;
+		$this->networkPropertiesDirty = true;
 	}
-	
+
+	public function attack(EntityDamageEvent $source) : void{
+		if($source->getCause() === EntityDamageEvent::CAUSE_VOID){
+			parent::attack($source);
+		}
+	}
+
+	protected function initEntity(CompoundTag $nbt) : void{
+		parent::initEntity($nbt);
+
+		$this->fuse = $nbt->getShort("Fuse", 80);
+	}
+
+	public function canCollideWith(Entity $entity) : bool{
+		return false;
+	}
+
+	public function saveNBT() : CompoundTag{
+		$nbt = parent::saveNBT();
+		$nbt->setShort("Fuse", $this->fuse);
+
+		return $nbt;
+	}
+
 	protected function entityBaseTick(int $tickDiff = 1) : bool{
 		if($this->closed){
 			return false;
 		}
 
 		$hasUpdate = parent::entityBaseTick($tickDiff);
-		
+
 		if(!$this->isFlaggedForDespawn()){
-			$this->newFuse -= $tickDiff;
 			$this->setNameTag(str_replace("{time}", "" . ($this->fuse / 20), TNTExplodeTime::getInstance()->getFormat()));
+
+			$this->fuse -= $tickDiff;
 			$this->networkPropertiesDirty = true;
-			if($this->newFuse <= 0){
+
+			if($this->fuse <= 0){
 				$this->flagForDespawn();
 				$this->explode();
 			}
@@ -62,5 +116,17 @@ class TNTExplode extends PrimedTNT{
 			}
 			$explosion->explodeB();
 		}
+	}
+
+	protected function syncNetworkData(EntityMetadataCollection $properties) : void{
+		parent::syncNetworkData($properties);
+
+		$properties->setGenericFlag(EntityMetadataFlags::IGNITED, true);
+		$properties->setInt(EntityMetadataProperties::VARIANT, $this->worksUnderwater ? 1 : 0);
+		$properties->setInt(EntityMetadataProperties::FUSE_LENGTH, $this->fuse);
+	}
+
+	public function getOffsetPosition(Vector3 $vector3) : Vector3{
+		return $vector3->add(0, 0.49, 0);
 	}
 }
