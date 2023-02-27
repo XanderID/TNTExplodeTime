@@ -6,7 +6,7 @@
 
 declare(strict_types=1);
 
-namespace MulqiGaming64\TNTExplodeTime\TNT;
+namespace XanderID\TNTExplodeTime\TNT;
 
 use pocketmine\event\entity\ExplosionPrimeEvent;
 use pocketmine\entity\Entity;
@@ -22,8 +22,8 @@ use pocketmine\network\mcpe\protocol\types\entity\EntityMetadataProperties;
 use pocketmine\world\Explosion;
 use pocketmine\world\Position;
 
-use MulqiGaming64\TNTExplodeTime\TNT\TNTExplosion;
-use MulqiGaming64\TNTExplodeTime\TNTExplodeTime;
+use XanderID\TNTExplodeTime\TNT\TNTExplosion;
+use XanderID\TNTExplodeTime\TNTExplodeTime;
 
 class TNTExplode extends Entity implements Explosive{
 	

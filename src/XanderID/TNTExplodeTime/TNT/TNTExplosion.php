@@ -6,9 +6,9 @@
 	
 declare(strict_types=1);
 
-namespace MulqiGaming64\TNTExplodeTime\TNT;
+namespace XanderID\TNTExplodeTime\TNT;
 
-use MulqiGaming64\TNTExplodeTime\TNTExplodeTime;
+use XanderID\TNTExplodeTime\TNTExplodeTime;
 use pocketmine\block\Block;
 use pocketmine\block\BlockFactory;
 use pocketmine\block\TNT;

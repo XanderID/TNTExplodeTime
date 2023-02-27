@@ -1,6 +1,6 @@
 <?php
 
-namespace MulqiGaming64\TNTExplodeTime;
+namespace XanderID\TNTExplodeTime;
 
 use pocketmine\plugin\PluginBase;
 use pocketmine\event\Listener;
@@ -31,7 +31,7 @@ use pocketmine\item\enchantment\VanillaEnchantments;
 use pocketmine\item\FlintSteel;
 use pocketmine\item\Item;
 
-use MulqiGaming64\TNTExplodeTime\TNT\TNTExplode;
+use XanderID\TNTExplodeTime\TNT\TNTExplode;
 
 use function cos;
 use function sin;

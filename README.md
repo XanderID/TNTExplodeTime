@@ -41,4 +41,4 @@ time-text: "§a{time}"
 ```
 
 # Additional Notes
-- If you find bugs or want to give suggestions, please visit [here](https://github.com/MulqiGaming64/TNTExplodeTime/issues)
+- If you find bugs or want to give suggestions, please visit [here](https://github.com/XanderID/TNTExplodeTime/issues)
